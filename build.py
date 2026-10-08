@@ -1,0 +1,236 @@
+"""Builds the website from content.py. Run:  python build.py  (standard library only)."""
+import base64
+from html import escape as e
+from pathlib import Path
+
+import content as c
+
+OUT = Path(__file__).parent
+P = c.PROFILE
+PAGES = [("index.html", "about"), ("research.html", "research"),
+         ("publications.html", "publications"), ("contact.html", "contact")]
+
+CSS = """
+:root{--bg:#070d18;--win:rgba(12,22,38,.92);--bar:#142238;--line:#223650;--ink:#d6e2f0;--muted:#8499ae;--cy:#5ec8ff;--am:#ffb52e;--lav:#9fb3ff}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--ink);font:15px/1.7 "JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;background:var(--bg) radial-gradient(circle,#16283d 1px,transparent 1px) 0 0/26px 26px}
+a{color:var(--cy);text-underline-offset:3px}
+a:focus-visible{outline:2px solid var(--am);outline-offset:3px;border-radius:2px}
+.bar{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;justify-content:space-between;gap:1rem;padding:.45rem 1rem;background:rgba(7,13,24,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);font-size:.8rem;color:var(--muted)}
+.bar b{color:var(--am);font-weight:600}
+.desk{max-width:60rem;margin:0 auto;padding:3.6rem 1rem 7rem}
+.win{background:var(--win);border:1px solid var(--line);border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.45);margin:0 0 1.4rem;overflow:hidden}
+.tb{display:flex;align-items:center;gap:.4rem;padding:.55rem .8rem;background:var(--bar);border-bottom:1px solid var(--line);font-size:.78rem;color:var(--muted)}
+.tb i{width:10px;height:10px;border-radius:50%;background:#ff5f57}
+.tb i:nth-child(2){background:#febc2e}
+.tb i:nth-child(3){background:#28c840}
+.tb span{margin-left:.6rem}
+.wb{padding:1.2rem 1.4rem}
+.sim .wb{padding:0}
+.view{position:relative;aspect-ratio:16/8;min-height:280px;background:radial-gradient(120% 90% at 50% 45%,#10233f 0%,#060c16 75%)}
+.small .view{aspect-ratio:16/4.6;min-height:210px}
+.view canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+.vfall{position:absolute;inset:0;display:grid;place-items:center;margin:0;color:var(--muted);font-size:.85rem;text-align:center;padding:1rem}
+.stat{display:flex;flex-wrap:wrap;gap:.2rem 1.2rem;padding:.55rem .9rem;border-top:1px solid var(--line);font-size:.74rem;color:var(--muted)}
+.c1{color:var(--cy)}.c2{color:var(--lav)}.c3{color:var(--am)}
+.cmd{margin:0 0 .7rem;color:var(--muted)}
+.cmd b{color:var(--am);font-weight:600}
+.cur{display:inline-block;width:.6em;height:1.1em;background:var(--ink);vertical-align:-.2em;animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.cur{animation:none}}
+h1{font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.1;margin:.2rem 0 .8rem;font-weight:600}
+h3{font-size:1rem;margin:0;font-weight:600;color:var(--cy)}
+.who{display:grid;grid-template-columns:1fr 10rem;gap:1.5rem;align-items:start;margin-bottom:1.6rem}
+.portrait{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
+.lede{margin:0 0 .6rem}
+.meta{color:var(--muted);font-size:.85rem;margin:.1rem 0 0}
+.sp{margin-top:1.6rem}
+.item{margin:0 0 1.7rem}
+.item:last-child{margin-bottom:0}
+.t{display:flex;flex-wrap:wrap;align-items:baseline;gap:.2rem .7rem}
+.badge{font-size:.72rem;border:1px solid var(--am);color:var(--am);border-radius:4px;padding:0 .45rem;white-space:nowrap}
+.item p:not(.meta),.bio p{margin:.4rem 0 0;max-width:46rem}
+.chips{display:flex;flex-wrap:wrap;gap:.1rem .9rem;list-style:none;padding:0;margin:.6rem 0 0;color:var(--lav);font-size:.8rem}
+.chips li::before{content:"["}.chips li::after{content:"]"}
+ul.plain{list-style:none;margin:0;padding:0}
+ul.plain li{margin:0 0 .8rem}
+ul.plain .meta{display:block}
+.k{display:inline-block;min-width:4.5rem;color:var(--muted)}
+.contact p{margin:0 0 .5rem}
+.dock{position:fixed;bottom:.9rem;left:50%;transform:translateX(-50%);z-index:5;display:flex;gap:.2rem;padding:.35rem;background:rgba(20,34,56,.92);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:14px;max-width:calc(100vw - 1rem);overflow-x:auto}
+.dock a{color:var(--muted);text-decoration:none;font-size:.8rem;padding:.4rem .8rem;border-radius:9px;white-space:nowrap}
+.dock a:hover{color:var(--ink);background:#1b2f4b}
+.dock a[aria-current]{color:var(--am);background:#1b2f4b}
+@media (max-width:640px){.who{grid-template-columns:1fr}.portrait{order:-1;max-width:9rem}.wb{padding:1rem}.bar span:last-child{display:none}}
+"""
+
+# 3D scene: field lines cross an interplanetary shock. Upstream they carry a whistler precursor
+# (helical waves growing toward the shock); downstream the field is compressed and turbulent.
+SCENE_JS = r"""
+(function(){
+var el=document.getElementById('scene');if(!el||!window.THREE)return;
+var r;try{r=new THREE.WebGLRenderer({antialias:true,alpha:true})}catch(x){return}
+var W=function(){return el.clientWidth},H=function(){return el.clientHeight};
+r.setPixelRatio(Math.min(window.devicePixelRatio,2));r.setSize(W(),H(),false);
+el.innerHTML='';el.appendChild(r.domElement);
+var s=new THREE.Scene(),cam=new THREE.PerspectiveCamera(40,W()/H(),.1,100);
+cam.position.set(-2.5,3.2,12);cam.lookAt(0,0,0);
+var g=new THREE.Group(),w=new THREE.Group();s.add(g);g.add(w);w.position.x=1.6;
+var i,grid=new THREE.GridHelper(16,16,0x2a4a6a,0x16283a);grid.position.y=-3;w.add(grid);
+var pg=new THREE.PlaneGeometry(7,7,14,14),pq=pg.attributes.position;
+for(i=0;i<pq.count;i++){var u=pq.getX(i),v=pq.getY(i);pq.setZ(i,-.012*(u*u+v*v))}
+var sh=new THREE.Group();
+sh.add(new THREE.Mesh(pg,new THREE.MeshBasicMaterial({color:0xffb52e,wireframe:true,transparent:true,opacity:.4})));
+sh.add(new THREE.Mesh(pg,new THREE.MeshBasicMaterial({color:0xffb52e,transparent:true,opacity:.09,side:THREE.DoubleSide,depthWrite:false})));
+sh.rotation.y=Math.PI/2;w.add(sh);
+var th=.87,ct=Math.cos(th),st=Math.sin(th),rr=2.5,dn=Math.sqrt(ct*ct+rr*rr*st*st),
+ u1=[ct,0,st],u2=[ct/dn,0,rr*st/dn],e2=[-st,0,ct],NU=120,ND=50,L=[];
+function mk(y0,z0){var n=NU+ND+1,pos=new Float32Array(n*3),col=new Float32Array(n*3),k;
+ for(k=0;k<n;k++){var up=k<=NU;col[k*3]=up?.37:.62;col[k*3+1]=up?.78:.7;col[k*3+2]=1}
+ var geo=new THREE.BufferGeometry();
+ geo.setAttribute('position',new THREE.BufferAttribute(pos,3));geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+ w.add(new THREE.Line(geo,new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:.9})));
+ L.push({y:y0,z:z0,xs:-.012*(y0*y0+z0*z0),pos:pos,geo:geo,n:n})}
+for(var a=-2;a<=2;a++)for(var b=-1;b<=1;b++)mk(a*.8,b*1.5);
+function upd(t){for(var i=0;i<L.length;i++){var l=L[i],p=l.pos;
+ for(var k=0;k<l.n;k++){var x,y,z;
+  if(k<=NU){var d=7*(1-k/NU),A=.3*Math.exp(-d/3)*(1-Math.exp(-d/.25)),ph=5*d+t*2.2;
+   x=l.xs-u1[0]*d+A*Math.sin(ph)*e2[0];y=l.y+A*Math.cos(ph);z=l.z-u1[2]*d+A*Math.sin(ph)*e2[2]}
+  else{var d2=4*(k-NU)/ND,B=.14*(1-Math.exp(-d2/.6)),q=B*Math.sin(3.3*d2+l.z*2-t*1.1);
+   x=l.xs+u2[0]*d2+q*e2[0];y=l.y+B*Math.sin(2.1*d2+l.y*3+t*1.5);z=l.z+u2[2]*d2+q*e2[2]}
+  p[k*3]=x;p[k*3+1]=y;p[k*3+2]=z}
+ l.geo.attributes.position.needsUpdate=true}}
+var N=650,pa=new Float32Array(N*3),PX=[],PY=[],PZ=[];
+for(i=0;i<N;i++){PX[i]=-4.5+Math.random()*7;PY[i]=(Math.random()-.5)*5.2;PZ[i]=(Math.random()-.5)*5.2}
+var pgm=new THREE.BufferGeometry();pgm.setAttribute('position',new THREE.BufferAttribute(pa,3));
+w.add(new THREE.Points(pgm,new THREE.PointsMaterial({color:0xdfeaff,size:.06,transparent:true,opacity:.8})));
+var px=0,py=0,t=0,still=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+el.addEventListener('pointermove',function(ev){var bb=el.getBoundingClientRect();px=(ev.clientX-bb.left)/bb.width-.5;py=(ev.clientY-bb.top)/bb.height-.5;if(still)frame()});
+window.addEventListener('resize',function(){r.setSize(W(),H(),false);cam.aspect=W()/H();cam.updateProjectionMatrix();if(still)frame()});
+function frame(){
+ if(!still){t+=.016;for(var k=0;k<N;k++){PX[k]+=PX[k]<0?.035:.012;if(PX[k]>2.2)PX[k]=-4.5}}
+ for(var m=0;m<N;m++){pa[m*3]=PX[m];pa[m*3+1]=PY[m];pa[m*3+2]=PZ[m]}
+ pgm.attributes.position.needsUpdate=true;upd(t);
+ g.rotation.y=.4*Math.sin(t*.15)+px*.7;g.rotation.x=.12+py*.3;
+ r.render(s,cam);if(!still)requestAnimationFrame(frame)}
+frame();
+})();
+"""
+
+CLOCK_JS = """(function(){var c=document.getElementById('clock');if(!c)return;function t(){c.textContent=new Date().toLocaleString('en-GB',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}t();setInterval(t,20000)})();"""
+
+
+def win(title, inner, cls=""):
+    return (f'<section class="win {cls}"><div class="tb"><i></i><i></i><i></i><span>{e(title)}</span></div>'
+            f'<div class="wb">{inner}</div></section>')
+
+
+def cmd(text, cursor=False):
+    cur = ' <span class="cur"></span>' if cursor else ""
+    return f'<p class="cmd"><b>$</b> {e(text)}{cur}</p>'
+
+
+def item(i):
+    title = e(i["title"])
+    if i.get("link"):
+        title = f'<a href="{e(i["link"])}" rel="noopener">{title}</a>'
+    badge = f'<span class="badge">{e(i["status"])}</span>' if i.get("status") else ""
+    meta = f'<p class="meta">{e(i["meta"])}</p>' if i.get("meta") else ""
+    text = f"<p>{e(i['text'])}</p>" if i.get("text") else ""
+    tags = "".join(f"<li>{e(x)}</li>" for x in i.get("tags", []))
+    tags = f'<ul class="chips">{tags}</ul>' if tags else ""
+    return f'<div class="item"><div class="t"><h3>{title}</h3>{badge}</div>{meta}{text}{tags}</div>'
+
+
+def sim(small=False):
+    body = ('<div class="view" id="scene"><p class="vfall">The 3D view needs JavaScript and WebGL.</p></div>'
+            '<div class="stat"><span class="c1">upstream: whistler precursor on the field lines</span>'
+            '<span class="c3">shock front</span><span class="c2">downstream: compressed, turbulent field</span>'
+            '<span>schematic, not to scale. Move the pointer to rotate.</span></div>')
+    return win("shock_sim.exe: whistler precursor at an interplanetary shock", body, "sim" + (" small" if small else ""))
+
+
+def photo_tag():
+    photo = P.get("photo", "")
+    if not photo:
+        return ""
+    f = OUT / photo
+    if not f.exists():
+        print("warning: photo file not found:", f)
+        return ""
+    mime = "image/png" if f.suffix.lower() == ".png" else "image/jpeg"
+    src = f"data:{mime};base64," + base64.b64encode(f.read_bytes()).decode()
+    return f'<img class="portrait" src="{src}" alt="Portrait of {e(P["name"])}" width="900" height="900">'
+
+
+def about():
+    img = photo_tag()
+    who = (cmd("whoami") + f'<div class="who"><div><h1>{e(P["name"])}</h1><p class="lede">{e(P["lede"])}</p>'
+           f'<p class="meta">{e(P["affiliation"])}</p></div>{img}</div>'
+           + cmd("cat bio.txt") + '<div class="bio">' + "".join(f"<p>{e(x)}</p>" for x in c.BIO) + "</div>")
+    edu = cmd("ls education/") + "".join(item(i) for i in c.EDUCATION)
+    train = cmd("ls workshops/") + '<ul class="plain">' + "".join(
+        f'<li><strong>{e(i["title"])}</strong><span class="meta">{e(i["meta"])}</span></li>' for i in c.TRAINING) + "</ul>"
+    chips = '<ul class="chips" style="margin-top:0">' + "".join(f"<li>{e(x)}</li>" for x in c.SKILLS) + "</ul>"
+    skills = (cmd("cat skills.cfg") + chips + f'<p class="meta sp">languages = {e(c.LANGUAGES)}</p>'
+              f'<p class="meta">{e(c.SERVICE)}</p>' + cmd("", cursor=True))
+    return (sim() + win("~/sunil/about.txt", who) + win("~/sunil/education.log", edu)
+            + win("~/sunil/workshops.log", train) + win("~/sunil/skills.cfg", skills))
+
+
+def research():
+    body = cmd("cat research/*.md") + f'<p class="meta">{e(c.INTRO["research"])}</p><div class="sp"></div>'
+    return sim(True) + win("~/sunil/research/", body + "".join(item(i) for i in c.RESEARCH) + cmd("", True))
+
+
+def publications():
+    body = cmd("cat publications.bib") + f'<p class="meta">{e(c.INTRO["publications"])}</p><div class="sp"></div>'
+    return sim(True) + win("~/sunil/publications.bib", body + "".join(item(i) for i in c.PUBLICATIONS) + cmd("", True))
+
+
+def contact():
+    rows = f'<p><span class="k">email</span><a href="mailto:{e(P["email"])}">{e(P["email"])}</a></p>'
+    rows += "".join(f'<p><span class="k">link</span><a href="{e(u)}" rel="noopener">{e(l)}</a></p>' for l, u in P["links"])
+    rows += f'<p><span class="k">address</span>{e(P["affiliation"])}</p>'
+    body = cmd("./contact.sh") + f'<p class="meta">{e(c.INTRO["contact"])}</p><div class="sp"></div>' + rows + cmd("", True)
+    return sim(True) + win("~/sunil/contact.sh", body, "contact")
+
+
+def shell(file, label, body):
+    nav = ""
+    for f, l in PAGES:
+        cur = ' aria-current="page"' if f == file else ""
+        nav += f'<a href="{f}"{cur}>{l}</a>'
+    title = f'{P["name"]} | {P["role"]}' if file == "index.html" else f'{label.capitalize()} | {P["name"]}'
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{e(title)}</title>
+<meta name="description" content="{e(P['lede'])}">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='9' fill='%23E8A317'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>{CSS}</style>
+</head>
+<body>
+<div class="bar"><span><b>●</b> {e(P['name'].lower().replace(' ', '.'))}@space-lab:~</span><span id="clock"></span></div>
+<main class="desk">{body}</main>
+<nav class="dock" aria-label="Pages">{nav}</nav>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>{SCENE_JS}</script>
+<script>{CLOCK_JS}</script>
+</body>
+</html>
+"""
+
+
+BUILDERS = {"index.html": about, "research.html": research,
+            "publications.html": publications, "contact.html": contact}
+
+if __name__ == "__main__":
+    for f, label in PAGES:
+        (OUT / f).write_text(shell(f, label, BUILDERS[f]()), encoding="utf-8")
+        print("wrote", f)
