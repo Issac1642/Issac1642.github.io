@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Publications | Sunil Yadav</title>
+<meta name="description" content="I am a doctoral researcher in space physics at the University of Turku. I study how shock waves near the Sun are built at kinetic scales, using data from Parker Solar Probe and Solar Orbiter.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='9' fill='%23E8A317'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0B1B2E;--ink:#14263A;--muted:#5A6B7C;--line:#E2E8EE;--soft:#F5F8FB;--accent:#1D58B8;--amber:#E09F1F}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#fff;color:var(--ink);font:17px/1.65 "Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-underline-offset:3px}
+a:focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:3px}
+.wrap{max-width:68rem;margin:0 auto;padding:0 1.5rem}
+.top{position:sticky;top:0;z-index:10;background:rgba(11,27,46,.94);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08)}
+.top .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.4rem 1rem;padding-top:.8rem;padding-bottom:.8rem}
+.brand{color:#fff;text-decoration:none;font:500 1.2rem "Newsreader",Georgia,serif}
+nav{display:flex;flex-wrap:wrap;gap:.2rem}
+nav a{color:#B8C7D8;text-decoration:none;font-size:.95rem;padding:.4rem .85rem;border-radius:8px}
+nav a:hover{color:#fff;background:rgba(255,255,255,.08)}
+nav a[aria-current]{color:#fff;background:rgba(255,255,255,.14)}
+.hero{position:relative;background:var(--navy);color:#fff;overflow:hidden}
+#scene{position:absolute;inset:0}
+#scene canvas{display:block;width:100%;height:100%}
+.hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(11,27,46,.96) 0%,rgba(11,27,46,.78) 40%,rgba(11,27,46,0) 72%)}
+.hero .in{position:relative;z-index:2;max-width:68rem;margin:0 auto;padding:4.5rem 1.5rem 5.5rem;display:grid;grid-template-columns:auto minmax(0,36rem);gap:2.5rem;align-items:center;pointer-events:none}
+.hero.sm .in{display:block;padding:3.2rem 1.5rem 3.4rem}
+.hero .btn{pointer-events:auto}
+.photo{display:block;width:11rem;height:11rem;object-fit:cover;border-radius:16px;border:3px solid rgba(255,255,255,.9);box-shadow:0 12px 36px rgba(0,0,0,.35)}
+.eyebrow{margin:0 0 .5rem;color:var(--amber);font-weight:600;font-size:.95rem}
+h1{font:500 clamp(2.4rem,6vw,3.9rem)/1.05 "Newsreader",Georgia,serif;letter-spacing:-.015em;margin:0 0 1rem}
+.hero.sm h1{font-size:clamp(2.1rem,5vw,3rem);margin-bottom:.6rem}
+.lede{margin:0 0 .6rem;color:#CBD7E4;font-size:1.12rem;line-height:1.6;max-width:36rem}
+.aff{margin:0 0 1.6rem;color:#8EA3B8;font-size:.95rem}
+.btn{display:inline-block;padding:.65rem 1.15rem;border-radius:8px;font-weight:600;font-size:.95rem;text-decoration:none;margin:0 .6rem .5rem 0}
+.btn.pri{background:#fff;color:var(--navy)}
+.btn.pri:hover{background:#E8EEF5}
+.btn.ghost{border:1px solid rgba(255,255,255,.4);color:#fff}
+.btn.ghost:hover{background:rgba(255,255,255,.1)}
+.btn.dark{background:var(--navy);color:#fff;margin:0}
+.btn.dark:hover{background:#17304D}
+.facts{position:relative;z-index:3;margin-top:-2.6rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 10px 30px rgba(11,27,46,.12)}
+.facts div{background:#fff;padding:1.1rem 1.3rem}
+.fl{display:block;color:var(--muted);font-size:.85rem}
+.fv{display:block;font-weight:600;line-height:1.35;margin-top:.15rem}
+.sec{padding:3.6rem 0 0}
+.sec:last-of-type{padding-bottom:4.5rem}
+h2{font:500 1.9rem/1.2 "Newsreader",Georgia,serif;margin:0 0 .4rem}
+.sub{color:var(--muted);margin:0 0 1.5rem}
+.sec h2+*{margin-top:1.2rem}
+.bio p{margin:0 0 1rem;max-width:44rem;font-size:1.05rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(19rem,1fr));gap:1rem}
+.stack{display:flex;flex-direction:column;gap:1rem}
+.card{border:1px solid var(--line);border-radius:12px;padding:1.3rem 1.5rem;background:#fff;transition:box-shadow .2s,border-color .2s}
+.card:hover{box-shadow:0 8px 24px rgba(11,27,46,.08);border-color:#CBD6E0}
+.card h3{font-size:1.08rem;margin:0;line-height:1.35}
+.t{display:flex;flex-wrap:wrap;align-items:baseline;gap:.25rem .7rem}
+.badge{font-size:.78rem;font-weight:600;color:#8A5A00;background:#FFF3D6;border-radius:999px;padding:.05rem .65rem;white-space:nowrap}
+.authors{margin:.4rem 0 0;font-size:.95rem;max-width:46rem}
+.meta{color:var(--muted);font-size:.93rem;margin:.2rem 0 0}
+.card p:not(.meta){margin:.55rem 0 0;max-width:46rem}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;list-style:none;padding:0;margin:.9rem 0 0}
+.chips li{background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:.1rem .75rem;font-size:.86rem;color:var(--muted)}
+.skills{margin-top:0}
+.plain{list-style:none;margin:.6rem 0 0;padding:0}
+.plain li{margin:0 0 .4rem}
+footer{background:var(--navy);color:#8EA3B8;font-size:.9rem}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem 2rem;padding-top:1.6rem;padding-bottom:1.6rem}
+@media (max-width:760px){.hero .in{grid-template-columns:1fr;gap:1.4rem;padding:2.6rem 1.5rem 4.2rem}.hero::after{background:linear-gradient(180deg,rgba(11,27,46,.92),rgba(11,27,46,.8))}.photo{width:7.5rem;height:7.5rem}}
+</style>
+</head>
+<body>
+<div class="top"><div class="wrap"><a class="brand" href="index.html">Sunil Yadav</a><nav aria-label="Pages"><a href="index.html">About</a><a href="research.html">Research</a><a href="publications.html" aria-current="page">Publications</a><a href="contact.html">Contact</a></nav></div></div>
+<header class="hero sm"><div id="scene" aria-hidden="true"></div><div class="in"><div><h1>Publications</h1><p class="lede">Peer-reviewed articles, theses and conference contributions.</p></div></div></header><section class="sec"><div class="wrap"><h2>Peer-reviewed articles</h2><div class="stack"><article class="card"><div class="t"><h3>The Wave-regulated Precursor of a Near-parallel Interplanetary Shock Observed by Parker Solar Probe</h3></div><p class="authors">Jebaraj, I. C., Colomban, L., Agapitov, O. V., Gedalin, M., Malkov, M. A., Kouloumvakos, A., Husidic, E., Mondal, S., <strong>Yadav, S.</strong>, &amp; Wijsen, N.</p><p class="meta">The Astrophysical Journal Letters, 1008, L36 · 2026</p><p class="meta"><a href="https://doi.org/10.3847/2041-8213/ae9afc" rel="noopener">DOI 10.3847/2041-8213/ae9afc</a></p></article><article class="card"><div class="t"><h3>Wave-Growth-Limited Acceleration in a Near-Parallel Interplanetary Shock Observed by Parker Solar Probe</h3></div><p class="authors">Kouloumvakos, A., Jebaraj, I. C., Malkov, M. A., Gedalin, M., Wijsen, N., Berland, G. D., Husidic, E., Agapitov, O. V., Colomban, L., <strong>Yadav, S.</strong>, Mitchell, D. G., Hill, M. E., Cohen, C. M. S., &amp; McComas, D. J.</p><p class="meta">The Astrophysical Journal Letters, 1011, L1 · 2026</p><p class="meta"><a href="https://doi.org/10.3847/2041-8213/aeaf56" rel="noopener">DOI 10.3847/2041-8213/aeaf56</a></p></article></div></div></section><section class="sec"><div class="wrap"><h2>Theses</h2><div class="stack"><article class="card"><div class="t"><h3>Large-Scale and Small-Scale Solar Magnetic Fields and X-ray Flux: A Multi-Instrument Analysis</h3></div><p class="authors"><strong>Yadav, S.</strong></p><p class="meta">MS thesis, IISER Berhampur · 2025</p><p class="meta"><a href="https://doi.org/10.13140/RG.2.2.13182.96321" rel="noopener">DOI 10.13140/RG.2.2.13182.96321</a></p></article></div></div></section><section class="sec"><div class="wrap"><h2>Conference contributions</h2><div class="stack"><article class="card"><div class="t"><h3>Poster from my MS thesis work</h3></div><p class="meta">Solar Cycle Variability 2024 · ARIES, Nainital · 14 to 18 October 2024</p><p>Presented by my supervisor.</p></article></div></div></section>
+<footer><div class="wrap"><span>© Sunil Yadav</span><span>Space Research Laboratory, Department of Physics and Astronomy, University of Turku, Finland</span></div></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>(function(){
+var el=document.getElementById('scene');if(!el||!window.THREE)return;
+var r;try{r=new THREE.WebGLRenderer({antialias:true,alpha:true})}catch(x){return}
+var W=function(){return el.clientWidth},H=function(){return el.clientHeight};
+r.setPixelRatio(Math.min(window.devicePixelRatio,2));r.setSize(W(),H(),false);
+el.innerHTML='';el.appendChild(r.domElement);
+var s=new THREE.Scene(),cam=new THREE.PerspectiveCamera(40,W()/H(),.1,100);
+cam.position.set(-2.5,3.2,12);cam.lookAt(0,0,0);
+var g=new THREE.Group(),w=new THREE.Group();s.add(g);g.add(w);w.position.x=1.6;function place(){g.position.x=W()>760?2.4:0}place();
+var i,grid=new THREE.GridHelper(16,16,0x2a4a6a,0x16283a);grid.position.y=-3;w.add(grid);
+var pg=new THREE.PlaneGeometry(7,7,14,14),pq=pg.attributes.position;
+for(i=0;i<pq.count;i++){var u=pq.getX(i),v=pq.getY(i);pq.setZ(i,-.012*(u*u+v*v))}
+var sh=new THREE.Group();
+sh.add(new THREE.Mesh(pg,new THREE.MeshBasicMaterial({color:0xffb52e,wireframe:true,transparent:true,opacity:.4})));
+sh.add(new THREE.Mesh(pg,new THREE.MeshBasicMaterial({color:0xffb52e,transparent:true,opacity:.09,side:THREE.DoubleSide,depthWrite:false})));
+sh.rotation.y=Math.PI/2;w.add(sh);
+var th=.87,ct=Math.cos(th),st=Math.sin(th),rr=2.5,dn=Math.sqrt(ct*ct+rr*rr*st*st),
+ u1=[ct,0,st],u2=[ct/dn,0,rr*st/dn],e2=[-st,0,ct],NU=120,ND=50,L=[];
+function mk(y0,z0){var n=NU+ND+1,pos=new Float32Array(n*3),col=new Float32Array(n*3),k;
+ for(k=0;k<n;k++){var up=k<=NU;col[k*3]=up?.37:.62;col[k*3+1]=up?.78:.7;col[k*3+2]=1}
+ var geo=new THREE.BufferGeometry();
+ geo.setAttribute('position',new THREE.BufferAttribute(pos,3));geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+ w.add(new THREE.Line(geo,new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:.9})));
+ L.push({y:y0,z:z0,xs:-.012*(y0*y0+z0*z0),pos:pos,geo:geo,n:n})}
+for(var a=-2;a<=2;a++)for(var b=-1;b<=1;b++)mk(a*.8,b*1.5);
+function upd(t){for(var i=0;i<L.length;i++){var l=L[i],p=l.pos;
+ for(var k=0;k<l.n;k++){var x,y,z;
+  if(k<=NU){var d=7*(1-k/NU),A=.3*Math.exp(-d/3)*(1-Math.exp(-d/.25)),ph=5*d+t*2.2;
+   x=l.xs-u1[0]*d+A*Math.sin(ph)*e2[0];y=l.y+A*Math.cos(ph);z=l.z-u1[2]*d+A*Math.sin(ph)*e2[2]}
+  else{var d2=4*(k-NU)/ND,B=.14*(1-Math.exp(-d2/.6)),q=B*Math.sin(3.3*d2+l.z*2-t*1.1);
+   x=l.xs+u2[0]*d2+q*e2[0];y=l.y+B*Math.sin(2.1*d2+l.y*3+t*1.5);z=l.z+u2[2]*d2+q*e2[2]}
+  p[k*3]=x;p[k*3+1]=y;p[k*3+2]=z}
+ l.geo.attributes.position.needsUpdate=true}}
+var N=650,pa=new Float32Array(N*3),PX=[],PY=[],PZ=[];
+for(i=0;i<N;i++){PX[i]=-4.5+Math.random()*7;PY[i]=(Math.random()-.5)*5.2;PZ[i]=(Math.random()-.5)*5.2}
+var pgm=new THREE.BufferGeometry();pgm.setAttribute('position',new THREE.BufferAttribute(pa,3));
+w.add(new THREE.Points(pgm,new THREE.PointsMaterial({color:0xdfeaff,size:.06,transparent:true,opacity:.8})));
+var px=0,py=0,t=0,still=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+el.addEventListener('pointermove',function(ev){var bb=el.getBoundingClientRect();px=(ev.clientX-bb.left)/bb.width-.5;py=(ev.clientY-bb.top)/bb.height-.5;if(still)frame()});
+window.addEventListener('resize',function(){r.setSize(W(),H(),false);cam.aspect=W()/H();cam.updateProjectionMatrix();place();if(still)frame()});
+function frame(){
+ if(!still){t+=.016;for(var k=0;k<N;k++){PX[k]+=PX[k]<0?.035:.012;if(PX[k]>2.2)PX[k]=-4.5}}
+ for(var m=0;m<N;m++){pa[m*3]=PX[m];pa[m*3+1]=PY[m];pa[m*3+2]=PZ[m]}
+ pgm.attributes.position.needsUpdate=true;upd(t);
+ g.rotation.y=.4*Math.sin(t*.15)+px*.7;g.rotation.x=.12+py*.3;
+ r.render(s,cam);if(!still)requestAnimationFrame(frame)}
+frame();
+})();
+</script>
+</body>
+</html>
